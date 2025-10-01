@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Rappel d'emprunt</title>
+</head>
+<body style="margin:0; padding:0; font-family: Arial, sans-serif; background-color: #f4f4f4;">
+  <table width="100%" cellpadding="0" cellspacing="0" style="max-width:600px; margin:20px auto; background:#ffffff; border-radius:8px; overflow:hidden;">
+    <tr>
+      <td style="background:#e67e22; color:#ffffff; text-align:center; padding:20px; font-size:20px; font-weight:bold;">
+        Rappel d'emprunt
+      </td>
+    </tr>
+    <tr>
+      <td style="padding:30px; text-align:left; color:#333333; font-size:16px; line-height:1.5;">
+        <p>Bonjour {{name}},</p>
+        <p>Nous vous rappelons que le livre <strong>{{book_title}}</strong> que vous avez emprunté doit être retourné avant le <strong>{{return_date}}</strong>.</p>
+        <p>Merci de vous assurer de le rendre à temps pour éviter toute pénalité.</p>
+        <p style="margin-top:20px;">
+          <a href="{{library_url}}" style="background:#e67e22; color:#ffffff; text-decoration:none; padding:10px 20px; border-radius:4px; font-weight:bold;">Voir mes emprunts</a>
+        </p>
+      </td>
+    </tr>
+    <tr>
+      <td style="background:#f4f4f4; text-align:center; padding:15px; font-size:12px; color:#888888;">
+        © 2025 Votre Bibliothèque. Tous droits réservés.
+      </td>
+    </tr>
+  </table>
+</body>
+</html>

@@ -65,7 +65,10 @@ router
     const { email, password } = req.body;
     const sql = 'SELECT * FROM utilisateurs WHERE email = ?'
     db.query(sql, [email], async (err, results) => {
-        if (err) throw err
+        curl -c cookies.txt -X POST http://localhost:3000/users/login \
+-H "Content-Type: application/json" \
+-d '{"email":"john@smith.com","password":"azerty"}'
+if (err) throw err
         if (results.length === 0) {
             return res.status(400).send('Utilisateur non trouvé')
         }

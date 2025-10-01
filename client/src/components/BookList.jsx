@@ -2,36 +2,36 @@ import React, { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import './../styles/booklist.css'
 
-const BookList = () => {
+const BookList = ({ utilisateurId }) => {
     const navigate = useNavigate()
     const [books, setBooks] = useState([])
     const [userRole, setUserRole] = useState('')
     const base = import.meta.env.VITE_BASE_URL || '/'
 
     useEffect(() => {
-        fetch(base+'api/books', {
-            credentials: 'include'
-        })
-            .then(response => response.json())
+        fetch(base+'api/books', { credentials: 'include' })
+            .then(res => res.json())
             .then(data => setBooks(data))
-            .catch(error => console.error('Erreur:', error))
-        fetch(base+'api/session', {
-            credentials: 'include'
-        })
-            .then(response => {
-                if(response.status === 200) return response.json()
-                else throw new Error("Account not found")
-            })
+            .catch(() => setBooks([]))
+        fetch(base+'api/session', { credentials: 'include' })
+            .then(res => res.status === 200 ? res.json() : Promise.reject())
             .then(data => setUserRole(data.user.role || 'Guest'))
-            .catch(error => setUserRole('Guest'))
+            .catch(() => setUserRole('Guest'))
     }, [])
 
-    const handleAddBook = () => {
-        navigate('/add_book')
-    }
+    const handleAddBook = () => navigate('/add_book')
+    const handleHome = () => navigate('/')
 
-    const handleHome = () => {
-        navigate('/')
+    const handleEmprunt = (bookId) => {
+        fetch(`${base}api/books/${bookId}/emprunter`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ utilisateur_id: utilisateurId }),
+            credentials: 'include'
+        })
+        .then(res => res.json())
+        .then(data => alert(data.message))
+        .catch(() => alert('Erreur lors de l\'emprunt'))
     }
 
     return (
@@ -46,6 +46,7 @@ const BookList = () => {
                             <th>Auteur</th>
                             <th>Date de publication</th>
                             <th>Statut</th>
+                            <th>Action</th>
                             <th>Détails</th>
                         </tr>
                     </thead>
@@ -57,20 +58,19 @@ const BookList = () => {
                                 <td>{book.auteur}</td>
                                 <td>{book.date_publication}</td>
                                 <td>{book.statut}</td>
+                                <td>
+                                    {book.statut === 'disponible' && <button onClick={() => handleEmprunt(book.id)}>Emprunter</button>}
+                                </td>
                                 <td><a href={`${base}book/${book.id}`}>Voir les détails</a></td>
                             </tr>
                         ))}
                     </tbody>
                 </table>
-            ) : (
-                <p>Erreur lors de la récupération des livres.</p>
-            )}
-            {userRole === 'admin' && (
-                <button onClick={handleAddBook}>Ajouter un livre</button>
-            )}
+            ) : <p>Erreur lors de la récupération des livres.</p>}
+            {userRole === 'admin' && <button onClick={handleAddBook}>Ajouter un livre</button>}
             <button onClick={handleHome}>Retour à l'accueil</button>
         </div>
-    );
-};
+    )
+}
 
 export default BookList
