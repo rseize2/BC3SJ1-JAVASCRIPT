@@ -20,7 +20,8 @@ function authenticateToken(req, res, next) {
     })
 }
 const corsOptions = {
-    origin: 'https://exam.andragogy.fr',
+    // origin: 'https://exam.andragogy.fr',
+    origin: 'http://localhost:5173',
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
     credentials: true,
     optionsSuccessStatus: 204
@@ -29,14 +30,21 @@ const corsOptions = {
 const router = express.Router()
 router.use(bodyParser.json());
 router.use(cors(corsOptions));
+// router.use(cors({ origin: "http://localhost:3000" }));
 router.use(cookieParser());
 router.use('/api/books', booksrouter);
 router.use('/api/users', usersRouter);
 
+// router.post('/api/logout', (req, res) => {
+//     req.session.destroy();
+//     res.json({ message: 'Déconnexion réussie' });
+// });
+
 router.post('/api/logout', (req, res) => {
-    req.session.destroy();
+    res.clearCookie('token', { httpOnly: true, sameSite: 'lax', secure: false, path: '/' });
     res.json({ message: 'Déconnexion réussie' });
 });
+
 
 router.get('/api/session', authenticateToken, (req, res) => {
     if (req?.user) {
